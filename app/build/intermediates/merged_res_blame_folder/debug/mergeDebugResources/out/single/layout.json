@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "com.abdnezar.spinview.example.app-mergeDebugResources-22:/layout/activity_example.xml",
+        "source": "com.abdnezar.spinview.example.app-main-25:/layout/activity_example.xml"
+    },
+    {
+        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-mergeDebugResources-22:\\layout\\activity_example.xml",
+        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\layout\\activity_example.xml"
+    }
+]

@@ -1,0 +1,26 @@
+int attr font 0x0
+int attr spnwBackgroundColor 0x0
+int attr spnwCenterImage 0x0
+int attr spnwCursor 0x0
+int attr spnwEdgeColor 0x0
+int attr spnwEdgeWidth 0x0
+int attr spnwSecondaryTextSize 0x0
+int attr spnwTopTextColor 0x0
+int attr spnwTopTextPadding 0x0
+int attr spnwTopTextSize 0x0
+int id cursorView 0x0
+int id spinView 0x0
+int layout layout_spinwheel 0x0
+int string app_name 0x0
+int[] styleable MyTextView { 0x0 }
+int styleable MyTextView_font 0
+int[] styleable SpinWheelView { 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 }
+int styleable SpinWheelView_spnwBackgroundColor 0
+int styleable SpinWheelView_spnwCenterImage 1
+int styleable SpinWheelView_spnwCursor 2
+int styleable SpinWheelView_spnwEdgeColor 3
+int styleable SpinWheelView_spnwEdgeWidth 4
+int styleable SpinWheelView_spnwSecondaryTextSize 5
+int styleable SpinWheelView_spnwTopTextColor 6
+int styleable SpinWheelView_spnwTopTextPadding 7
+int styleable SpinWheelView_spnwTopTextSize 8

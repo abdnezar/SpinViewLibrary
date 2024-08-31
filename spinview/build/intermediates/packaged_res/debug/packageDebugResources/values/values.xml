@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SpinWheel</string>
+    <declare-styleable name="MyTextView">
+        <attr format="reference" name="font"/>
+    </declare-styleable>
+    <declare-styleable name="SpinWheelView">
+        <attr format="color" name="spnwBackgroundColor"/>
+        <attr format="reference" name="spnwCursor"/>
+        <attr format="reference" name="spnwCenterImage"/>
+        <attr format="color" name="spnwEdgeColor"/>
+        <attr format="integer" name="spnwEdgeWidth"/>
+        <attr format="color" name="spnwTopTextColor"/>
+        <attr format="dimension" name="spnwTopTextPadding"/>
+        <attr format="dimension" name="spnwTopTextSize"/>
+        <attr format="dimension" name="spnwSecondaryTextSize"/>
+    </declare-styleable>
+</resources>
