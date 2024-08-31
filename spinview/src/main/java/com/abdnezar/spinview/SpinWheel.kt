@@ -1,174 +1,168 @@
-package com.abdnezar.spinview;
+package com.abdnezar.spinview
 
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.RelativeLayout
+import com.abdnezar.spinview.model.SpinItem
+import com.abdnezar.spinview.utils.Utils.convertDpToPixel
+import com.abdnezar.spinview.views.Spin
+import com.abdnezar.spinview.views.Spin.PieRotateListener
+import java.util.Random
 
-import java.util.List;
-import java.util.Random;
+class SpinWheel : RelativeLayout, PieRotateListener {
+    private var mBackgroundColor = 0
+    private var mTextColor = 0
+    private var mTopTextSize = 0
+    private var mSecondaryTextSize = 0
+    private var mBorderColor = 0
+    private var mTopTextPadding = 0
+    private var mEdgeWidth = 0
+    private var mCenterImage: Drawable? = null
+    private var mCursorImage: Drawable? = null
 
-import com.abdnezar.spinview.model.SpinItem;
-import com.abdnezar.spinview.utils.Utils;
-import com.abdnezar.spinview.views.Spin;
+    private lateinit var spin: Spin
+    private var ivCursorView: ImageView? = null
 
-public class SpinWheel extends RelativeLayout implements Spin.PieRotateListener {
-    private int mBackgroundColor;
-    private int mTextColor;
-    private int mTopTextSize;
-    private int mSecondaryTextSize;
-    private int mBorderColor;
-    private int mTopTextPadding;
-    private int mEdgeWidth;
-    private Drawable mCenterImage;
-    private Drawable mCursorImage;
+    private lateinit var spinWheelRoundItemSelectedListener: ((Int) -> Unit)
 
-    private Spin spin;
-    private ImageView ivCursorView;
-
-    private SpinWheelRoundItemSelectedListener spinWheelRoundItemSelectedListener;
-
-    @Override
-    public void rotateDone(int index) {
-        if (spinWheelRoundItemSelectedListener != null) {
-            spinWheelRoundItemSelectedListener.SpinWheelRoundItemSelected(index);
-        }
+    override fun rotateDone(index: Int) {
+        spinWheelRoundItemSelectedListener(index)
     }
 
-    public interface SpinWheelRoundItemSelectedListener {
-        void SpinWheelRoundItemSelected(int index);
+    fun setSpinWheelRoundItemSelectedListener(listener: (Int) -> Unit) {
+        this.spinWheelRoundItemSelectedListener = listener
     }
 
-    public void setSpinWheelRoundItemSelectedListener(SpinWheelRoundItemSelectedListener listener) {
-        this.spinWheelRoundItemSelectedListener = listener;
+    constructor(context: Context) : super(context) {
+        init(context, null)
     }
 
-    public SpinWheel(Context context) {
-        super(context);
-        init(context, null);
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
+        init(context, attrs)
     }
 
-    public SpinWheel(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init(context, attrs);
-    }
-
-    private void init(Context ctx, AttributeSet attrs) {
+    private fun init(ctx: Context, attrs: AttributeSet?) {
         if (attrs != null) {
-            TypedArray typedArray = ctx.obtainStyledAttributes(attrs, R.styleable.SpinWheelView);
-            mBackgroundColor = typedArray.getColor(R.styleable.SpinWheelView_spnwBackgroundColor, 0xffcc0000);
-            mTopTextSize = typedArray.getDimensionPixelSize(R.styleable.SpinWheelView_spnwTopTextSize, (int) Utils.convertDpToPixel(15f, getContext()));
-            mSecondaryTextSize = typedArray.getDimensionPixelSize(R.styleable.SpinWheelView_spnwSecondaryTextSize, (int) Utils.convertDpToPixel(20f, getContext()));
-            mTextColor = typedArray.getColor(R.styleable.SpinWheelView_spnwTopTextColor, 0);
-            mTopTextPadding = typedArray.getDimensionPixelSize(R.styleable.SpinWheelView_spnwTopTextPadding, (int) Utils.convertDpToPixel(25f, getContext())) + (int) Utils.convertDpToPixel(10f, getContext());
-            mCursorImage = typedArray.getDrawable(R.styleable.SpinWheelView_spnwCursor);
-            mCenterImage = typedArray.getDrawable(R.styleable.SpinWheelView_spnwCenterImage);
-            mEdgeWidth = typedArray.getInt(R.styleable.SpinWheelView_spnwEdgeWidth, 10);
-            mBorderColor = typedArray.getColor(R.styleable.SpinWheelView_spnwEdgeColor, 0);
-            typedArray.recycle();
+            val typedArray = ctx.obtainStyledAttributes(attrs, R.styleable.SpinWheelView)
+            mBackgroundColor =
+                typedArray.getColor(R.styleable.SpinWheelView_spnwBackgroundColor, -0x340000)
+            mTopTextSize = typedArray.getDimensionPixelSize(
+                R.styleable.SpinWheelView_spnwTopTextSize,
+                convertDpToPixel(15f, context).toInt()
+            )
+            mSecondaryTextSize = typedArray.getDimensionPixelSize(
+                R.styleable.SpinWheelView_spnwSecondaryTextSize,
+                convertDpToPixel(20f, context).toInt()
+            )
+            mTextColor = typedArray.getColor(R.styleable.SpinWheelView_spnwTopTextColor, 0)
+            mTopTextPadding = typedArray.getDimensionPixelSize(
+                R.styleable.SpinWheelView_spnwTopTextPadding,
+                convertDpToPixel(25f, context).toInt()
+            ) + convertDpToPixel(10f, context).toInt()
+            mCursorImage = typedArray.getDrawable(R.styleable.SpinWheelView_spnwCursor)
+            mCenterImage = typedArray.getDrawable(R.styleable.SpinWheelView_spnwCenterImage)
+            mEdgeWidth = typedArray.getInt(R.styleable.SpinWheelView_spnwEdgeWidth, 10)
+            mBorderColor = typedArray.getColor(R.styleable.SpinWheelView_spnwEdgeColor, 0)
+            typedArray.recycle()
         }
 
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        FrameLayout frameLayout = (FrameLayout) inflater.inflate(R.layout.layout_spinwheel, this, false);
+        val inflater = LayoutInflater.from(context)
+        val frameLayout = inflater.inflate(R.layout.layout_spinwheel, this, false) as FrameLayout
 
-        spin = frameLayout.findViewById(R.id.spinView);
-        ivCursorView = frameLayout.findViewById(R.id.cursorView);
+        spin = frameLayout.findViewById(R.id.spinView)
+        ivCursorView = frameLayout.findViewById(R.id.cursorView)
 
-        spin.setPieRotateListener(this);
-        spin.setPieBackgroundColor(mBackgroundColor);
-        spin.setTopTextPadding(mTopTextPadding);
-        spin.setTopTextSize(mTopTextSize);
-        spin.setSecondaryTextSizeSize(mSecondaryTextSize);
-        spin.setPieCenterImage(mCenterImage);
-        spin.setBorderColor(mBorderColor);
-        spin.setBorderWidth(mEdgeWidth);
+        spin.setPieRotateListener(this)
+        spin.setPieBackgroundColor(mBackgroundColor)
+        spin.setTopTextPadding(mTopTextPadding)
+        spin.setTopTextSize(mTopTextSize)
+        spin.setSecondaryTextSizeSize(mSecondaryTextSize)
+        spin.setPieCenterImage(mCenterImage)
+        spin.setBorderColor(mBorderColor)
+        spin.setBorderWidth(mEdgeWidth)
 
 
-        if (mTextColor != 0)
-            spin.setPieTextColor(mTextColor);
+        if (mTextColor != 0) spin.setPieTextColor(mTextColor)
 
-        ivCursorView.setImageDrawable(mCursorImage);
+        ivCursorView?.setImageDrawable(mCursorImage)
 
-        addView(frameLayout);
+        addView(frameLayout)
     }
 
-    
-    public boolean isTouchEnabled() {
-        return spin.isTouchEnabled();
-    }
 
-    public void setTouchEnabled(boolean touchEnabled) {
-        spin.setTouchEnabled(touchEnabled);
-    }
+    var isTouchEnabled: Boolean
+        get() = spin.isTouchEnabled
+        set(touchEnabled) {
+            spin.isTouchEnabled = touchEnabled
+        }
 
-    
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         //This is to control that the touch events triggered are only going to the PieView
-        for (int i = 0; i < getChildCount(); i++) {
+        for (i in 0 until childCount) {
             if (isPielView(getChildAt(i))) {
-                return super.dispatchTouchEvent(ev);
+                return super.dispatchTouchEvent(ev)
             }
         }
-        return false;
+        return false
     }
 
-    private boolean isPielView(View view) {
-        if (view instanceof ViewGroup) {
-            for (int i = 0; i < getChildCount(); i++) {
-                if (isPielView(((ViewGroup) view).getChildAt(i))) {
-                    return true;
+    private fun isPielView(view: View): Boolean {
+        if (view is ViewGroup) {
+            for (i in 0 until childCount) {
+                if (isPielView(view.getChildAt(i))) {
+                    return true
                 }
             }
         }
-        return view instanceof Spin;
+        return view is Spin
     }
 
-    public void setSpinWheelBackgrouldColor(int color) {
-        spin.setPieBackgroundColor(color);
+    fun setSpinWheelBackgrouldColor(color: Int) {
+        spin.setPieBackgroundColor(color)
     }
 
-    public void setSpinWheelCursorImage(int drawable) {
-        ivCursorView.setBackgroundResource(drawable);
+    fun setSpinWheelCursorImage(drawable: Int) {
+        ivCursorView!!.setBackgroundResource(drawable)
     }
 
-    public void setSpinWheelCenterImage(Drawable drawable) {
-        spin.setPieCenterImage(drawable);
+    fun setSpinWheelCenterImage(drawable: Drawable?) {
+        spin.setPieCenterImage(drawable)
     }
 
-    public void setBorderColor(int color) {
-        spin.setBorderColor(color);
+    fun setBorderColor(color: Int) {
+        spin.setBorderColor(color)
     }
 
-    public void setSpinWheelTextColor(int color) {
-        spin.setPieTextColor(color);
+    fun setSpinWheelTextColor(color: Int) {
+        spin.setPieTextColor(color)
     }
 
-    public void setData(List<SpinItem> data) {
-        spin.setData(data);
+    fun setData(data: List<SpinItem>?) {
+        spin.setData(data)
     }
 
-    public void setRound(int numberOfRound) {
-        spin.setRound(numberOfRound);
+    fun setRound(numberOfRound: Int) {
+        spin.setRound(numberOfRound)
     }
 
-    public void setPredeterminedNumber(int fixedNumber) {
-        spin.setPredeterminedNumber(fixedNumber);
+    fun setPredeterminedNumber(fixedNumber: Int) {
+        spin.setPredeterminedNumber(fixedNumber)
     }
 
-    public void startSpinWheelWithTargetIndex(int index) {
-        spin.rotateTo(index);
+    fun startSpinWheelWithTargetIndex(index: Int) {
+        spin.rotateTo(index)
     }
-    
-    public void startSpinWheelWithRandomTarget() {
-        Random r = new Random();
-        spin.rotateTo(r.nextInt(spin.getSpinItemListSize() - 1));
+
+    fun startSpinWheelWithRandomTarget() {
+        val r = Random()
+        spin.rotateTo(r.nextInt(spin.spinItemListSize - 1))
     }
 }

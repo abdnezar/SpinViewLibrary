@@ -1,90 +1,82 @@
 [
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.abdnezar.spinview.example.app-main-25:/mipmap-mdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\xml_data_extraction_rules.xml.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\xml\\data_extraction_rules.xml"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.abdnezar.spinview.example.app-main-25:/mipmap-anydpi-v26/ic_launcher_round.xml"
     },
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\mipmap-xhdpi_ic_launcher.webp.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\mipmap-xhdpi\\ic_launcher.webp"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.abdnezar.spinview.example.app-main-25:/mipmap-xxhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\drawable_baseline_arrow_circle_down_24.xml.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\drawable\\baseline_arrow_circle_down_24.xml"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/drawable-anydpi-v24_ic_launcher_foreground.xml.flat",
+        "source": "com.abdnezar.spinview.example.app-pngs-19:/drawable-anydpi-v24/ic_launcher_foreground.xml"
     },
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\drawable_ic_launcher_background.xml.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\drawable\\ic_launcher_background.xml"
-    },
-    {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\mipmap-xxxhdpi_ic_launcher.webp.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\mipmap-xxxhdpi\\ic_launcher.webp"
-    },
-    {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\mipmap-xxhdpi_ic_launcher.webp.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\mipmap-xxhdpi\\ic_launcher.webp"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.abdnezar.spinview.example.app-main-25:/mipmap-xxxhdpi/ic_launcher_round.webp"
     },
     {
         "merged": "com.abdnezar.spinview.example.app-debug-23:/layout_activity_example.xml.flat",
         "source": "com.abdnezar.spinview.example.app-main-25:/layout/activity_example.xml"
     },
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\drawable-anydpi-v24_ic_launcher_foreground.xml.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-pngs-19:\\drawable-anydpi-v24\\ic_launcher_foreground.xml"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.abdnezar.spinview.example.app-main-25:/mipmap-anydpi-v26/ic_launcher.xml"
     },
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\xml_backup_rules.xml.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\xml\\backup_rules.xml"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/xml_backup_rules.xml.flat",
+        "source": "com.abdnezar.spinview.example.app-main-25:/xml/backup_rules.xml"
     },
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\drawable_ic_cursor.png.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\drawable\\ic_cursor.png"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.abdnezar.spinview.example.app-main-25:/drawable/ic_launcher_background.xml"
     },
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\mipmap-xxhdpi_ic_launcher_round.webp.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\mipmap-xxhdpi\\ic_launcher_round.webp"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.abdnezar.spinview.example.app-main-25:/mipmap-xhdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\mipmap-xxxhdpi_ic_launcher_round.webp.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\mipmap-xxxhdpi\\ic_launcher_round.webp"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.abdnezar.spinview.example.app-main-25:/mipmap-xhdpi/ic_launcher.webp"
     },
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\mipmap-xhdpi_ic_launcher_round.webp.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\mipmap-xhdpi\\ic_launcher_round.webp"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.abdnezar.spinview.example.app-main-25:/mipmap-hdpi/ic_launcher_round.webp"
     },
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\drawable_ic_wheel.png.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\drawable\\ic_wheel.png"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/drawable_ic_cursor.png.flat",
+        "source": "com.abdnezar.spinview.example.app-main-25:/drawable/ic_cursor.png"
     },
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\mipmap-mdpi_ic_launcher_round.webp.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\mipmap-mdpi\\ic_launcher_round.webp"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/drawable_ic_wheel.png.flat",
+        "source": "com.abdnezar.spinview.example.app-main-25:/drawable/ic_wheel.png"
     },
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\mipmap-hdpi_ic_launcher.webp.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\mipmap-hdpi\\ic_launcher.webp"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.abdnezar.spinview.example.app-main-25:/mipmap-hdpi/ic_launcher.webp"
     },
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\layout_activity_example.xml.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\layout\\activity_example.xml"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.abdnezar.spinview.example.app-main-25:/mipmap-mdpi/ic_launcher.webp"
     },
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\mipmap-mdpi_ic_launcher.webp.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\mipmap-mdpi\\ic_launcher.webp"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.abdnezar.spinview.example.app-main-25:/mipmap-xxhdpi/ic_launcher.webp"
     },
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\drawable_ic_gold.png.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\drawable\\ic_gold.png"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.abdnezar.spinview.example.app-main-25:/mipmap-xxxhdpi/ic_launcher.webp"
     },
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\mipmap-hdpi_ic_launcher_round.webp.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\mipmap-hdpi\\ic_launcher_round.webp"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/drawable_ic_gold.png.flat",
+        "source": "com.abdnezar.spinview.example.app-main-25:/drawable/ic_gold.png"
     },
     {
-        "merged": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-debug-23:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
-        "source": "E:\\gradle\\daemon\\8.7\\com.abdnezar.spinview.example.app-main-25:\\mipmap-anydpi-v26\\ic_launcher.xml"
+        "merged": "com.abdnezar.spinview.example.app-debug-23:/xml_data_extraction_rules.xml.flat",
+        "source": "com.abdnezar.spinview.example.app-main-25:/xml/data_extraction_rules.xml"
     }
 ]

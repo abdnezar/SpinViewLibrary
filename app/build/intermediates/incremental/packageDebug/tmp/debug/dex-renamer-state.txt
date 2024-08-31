@@ -1,4 +1,4 @@
-#Sat Aug 31 15:50:14 EEST 2024
+#Sat Aug 31 16:27:53 EEST 2024
 base.0=F\:\\1MYAPPS\\2023\\7MyApps\\SpinViewLibrary\\app\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex
 base.1=F\:\\1MYAPPS\\2023\\7MyApps\\SpinViewLibrary\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\10\\classes.dex
 base.2=F\:\\1MYAPPS\\2023\\7MyApps\\SpinViewLibrary\\app\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\7\\classes.dex

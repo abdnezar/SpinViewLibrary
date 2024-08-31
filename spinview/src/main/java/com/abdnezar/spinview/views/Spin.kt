@@ -1,556 +1,605 @@
-package com.abdnezar.spinview.views;
+package com.abdnezar.spinview.views
 
-import android.animation.Animator;
-import android.animation.TimeInterpolator;
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.text.TextPaint;
-import android.text.TextUtils;
-import android.util.AttributeSet;
-import android.util.TypedValue;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
+import android.animation.Animator
+import android.animation.Animator.AnimatorListener
+import android.animation.TimeInterpolator
+import android.annotation.TargetApi
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.Rect
+import android.graphics.RectF
+import android.graphics.Typeface
+import android.graphics.drawable.Drawable
+import android.os.Build
+import android.text.TextPaint
+import android.text.TextUtils
+import android.util.AttributeSet
+import android.util.TypedValue
+import android.view.MotionEvent
+import android.view.View
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.LinearInterpolator
+import androidx.annotation.IntDef
+import androidx.core.graphics.ColorUtils
+import com.abdnezar.spinview.model.SpinItem
+import com.abdnezar.spinview.utils.Utils.drawableToBitmap
+import java.util.Random
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.min
+import kotlin.math.sin
 
-import java.util.List;
-import java.util.Random;
-import androidx.annotation.IntDef;
-import androidx.core.graphics.ColorUtils;
+class Spin : View {
+    private var mRange = RectF()
+    private var mRadius = 0
 
-import com.abdnezar.spinview.model.SpinItem;
-import com.abdnezar.spinview.utils.Utils;
+    private var mArcPaint: Paint? = null
+    private var mBackgroundPaint: Paint? = null
+    private var mTextPaint: TextPaint? = null
 
-public class Spin extends View {
-    private RectF mRange = new RectF();
-    private int mRadius;
+    private val mStartAngle = 0f
+    private var mCenter = 0
+    private var mPadding = 0
+    private var mTopTextPadding = 0
+    private var mTopTextSize = 0
+    private var mSecondaryTextSize = 0
+    private var mRoundOfNumber = 4
+    private var mEdgeWidth = -1
+    private var isRunning = false
 
-    private Paint mArcPaint;
-    private Paint mBackgroundPaint;
-    private TextPaint mTextPaint;
+    private var borderColor = 0
+    private var defaultBackgroundColor = 0
+    private var drawableCenterImage: Drawable? = null
+    private var textColor = 0
 
-    private float mStartAngle = 0;
-    private int mCenter;
-    private int mPadding;
-    private int mTopTextPadding;
-    private int mTopTextSize;
-    private int mSecondaryTextSize;
-    private int mRoundOfNumber = 4;
-    private int mEdgeWidth = -1;
-    private boolean isRunning = false;
+    private var predeterminedNumber = -1
 
-    private int borderColor = 0;
-    private int defaultBackgroundColor = 0;
-    private Drawable drawableCenterImage;
-    private int textColor = 0;
-
-    private int predeterminedNumber = -1;
-
-    float viewRotation;
-    double fingerRotation;
-    long downPressTime, upPressTime;
-    double[] newRotationStore = new double[3];
+    var viewRotation: Float = 0f
+    var fingerRotation: Double = 0.0
+    var downPressTime: Long = 0
+    var upPressTime: Long = 0
+    var newRotationStore: DoubleArray = DoubleArray(3)
 
 
-    private List<SpinItem> mSpinItemList;
+    private var mSpinItemList: List<SpinItem>? = null
 
-    private PieRotateListener mPieRotateListener;
+    private var mPieRotateListener: PieRotateListener? = null
 
-    public interface PieRotateListener {
-        void rotateDone(int index);
+    interface PieRotateListener {
+        fun rotateDone(index: Int)
     }
 
-    public Spin(Context context) {
-        super(context);
+    constructor(context: Context?) : super(context)
+
+    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
+
+    fun setPieRotateListener(listener: PieRotateListener?) {
+        this.mPieRotateListener = listener
     }
 
-    public Spin(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    private fun init() {
+        mArcPaint = Paint()
+        mArcPaint!!.isAntiAlias = true
+        mArcPaint!!.isDither = true
+
+        mTextPaint = TextPaint()
+        mTextPaint!!.isAntiAlias = true
+
+
+        if (textColor != 0) mTextPaint!!.color = textColor
+        mTextPaint!!.textSize = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_SP, 14f,
+            resources.displayMetrics
+        )
+
+        mRange = RectF(
+            mPadding.toFloat(),
+            mPadding.toFloat(),
+            (mPadding + mRadius).toFloat(),
+            (mPadding + mRadius).toFloat()
+        )
     }
 
-    public void setPieRotateListener(PieRotateListener listener) {
-        this.mPieRotateListener = listener;
+    val spinItemListSize: Int
+        get() = mSpinItemList!!.size
+
+    fun setData(spinItemList: List<SpinItem>?) {
+        this.mSpinItemList = spinItemList
+        invalidate()
     }
 
-    private void init() {
-        mArcPaint = new Paint();
-        mArcPaint.setAntiAlias(true);
-        mArcPaint.setDither(true);
-
-        mTextPaint = new TextPaint();
-        mTextPaint.setAntiAlias(true);
-
-
-        if (textColor != 0) mTextPaint.setColor(textColor);
-        mTextPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14,
-                getResources().getDisplayMetrics()));
-
-        mRange = new RectF(mPadding, mPadding, mPadding + mRadius, mPadding + mRadius);
+    fun setPieBackgroundColor(color: Int) {
+        defaultBackgroundColor = color
+        invalidate()
     }
 
-    public int getSpinItemListSize() {
-        return mSpinItemList.size();
-    }
-    
-    public void setData(List<SpinItem> spinItemList) {
-        this.mSpinItemList = spinItemList;
-        invalidate();
+    fun setBorderColor(color: Int) {
+        borderColor = color
+        invalidate()
     }
 
-    public void setPieBackgroundColor(int color) {
-        defaultBackgroundColor = color;
-        invalidate();
-    }
-
-    public void setBorderColor(int color) {
-        borderColor = color;
-        invalidate();
-    }
-
-    public void setTopTextPadding(int padding) {
-        mTopTextPadding = padding;
-        invalidate();
-    }
-
-
-    public void setPieCenterImage(Drawable drawable) {
-        drawableCenterImage = drawable;
-        invalidate();
-    }
-
-    public void setTopTextSize(int size) {
-        mTopTextSize = size;
-        invalidate();
-    }
-
-    public void setSecondaryTextSizeSize(int size) {
-        mSecondaryTextSize = size;
-        invalidate();
+    fun setTopTextPadding(padding: Int) {
+        mTopTextPadding = padding
+        invalidate()
     }
 
 
-    public void setBorderWidth(int width) {
-        mEdgeWidth = width;
-        invalidate();
+    fun setPieCenterImage(drawable: Drawable?) {
+        drawableCenterImage = drawable
+        invalidate()
     }
 
-    public void setPieTextColor(int color) {
-        textColor = color;
-        invalidate();
+    fun setTopTextSize(size: Int) {
+        mTopTextSize = size
+        invalidate()
     }
 
-    private void drawPieBackgroundWithBitmap(Canvas canvas, Bitmap bitmap) {
-        canvas.drawBitmap(bitmap, null, new Rect(mPadding / 2, mPadding / 2,
-                getMeasuredWidth() - mPadding / 2,
-                getMeasuredHeight() - mPadding / 2), null);
+    fun setSecondaryTextSizeSize(size: Int) {
+        mSecondaryTextSize = size
+        invalidate()
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+
+    fun setBorderWidth(width: Int) {
+        mEdgeWidth = width
+        invalidate()
+    }
+
+    fun setPieTextColor(color: Int) {
+        textColor = color
+        invalidate()
+    }
+
+    private fun drawPieBackgroundWithBitmap(canvas: Canvas, bitmap: Bitmap) {
+        canvas.drawBitmap(
+            bitmap, null, Rect(
+                mPadding / 2, mPadding / 2,
+                measuredWidth - mPadding / 2,
+                measuredHeight - mPadding / 2
+            ), null
+        )
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
 
         if (mSpinItemList == null) {
-            return;
+            return
         }
 
-        drawBackgroundColor(canvas, defaultBackgroundColor);
+        drawBackgroundColor(canvas, defaultBackgroundColor)
 
-        init();
+        init()
 
-        float tmpAngle = mStartAngle;
-        float sweepAngle = 360f / mSpinItemList.size();
+        var tmpAngle = mStartAngle
+        val sweepAngle = 360f / mSpinItemList!!.size
 
-        for (int i = 0; i < mSpinItemList.size(); i++) {
-
-            if (mSpinItemList.get(i).color != 0) {
-                mArcPaint.setStyle(Paint.Style.FILL);
-                mArcPaint.setColor(mSpinItemList.get(i).color);
-                canvas.drawArc(mRange, tmpAngle, sweepAngle, true, mArcPaint);
+        for (i in mSpinItemList!!.indices) {
+            if (mSpinItemList!![i].color != 0) {
+                mArcPaint!!.style = Paint.Style.FILL
+                mArcPaint!!.color = mSpinItemList!![i].color
+                canvas.drawArc(mRange, tmpAngle, sweepAngle, true, mArcPaint!!)
             }
 
             if (borderColor != 0 && mEdgeWidth > 0) {
-                mArcPaint.setStyle(Paint.Style.STROKE);
-                mArcPaint.setColor(borderColor);
-                mArcPaint.setStrokeWidth(mEdgeWidth);
-                canvas.drawArc(mRange, tmpAngle, sweepAngle, true, mArcPaint);
+                mArcPaint!!.style = Paint.Style.STROKE
+                mArcPaint!!.color = borderColor
+                mArcPaint!!.strokeWidth = mEdgeWidth.toFloat()
+                canvas.drawArc(mRange, tmpAngle, sweepAngle, true, mArcPaint!!)
             }
 
-            int sliceColor = mSpinItemList.get(i).color != 0 ? mSpinItemList.get(i).color : defaultBackgroundColor;
+            val sliceColor =
+                if (mSpinItemList!![i].color != 0) mSpinItemList!![i].color else defaultBackgroundColor
 
-            if (!TextUtils.isEmpty(mSpinItemList.get(i).topText))
-                drawTopText(canvas, tmpAngle, sweepAngle, mSpinItemList.get(i).topText, sliceColor);
-            if (!TextUtils.isEmpty(mSpinItemList.get(i).secondaryText))
-                drawSecondaryText(canvas, tmpAngle, mSpinItemList.get(i).secondaryText, sliceColor);
+            if (!TextUtils.isEmpty(mSpinItemList!![i].topText)) drawTopText(
+                canvas,
+                tmpAngle,
+                sweepAngle,
+                mSpinItemList!![i].topText,
+                sliceColor
+            )
+            if (!TextUtils.isEmpty(mSpinItemList!![i].secondaryText)) drawSecondaryText(
+                canvas,
+                tmpAngle,
+                mSpinItemList!![i].secondaryText,
+                sliceColor
+            )
 
-            if (mSpinItemList.get(i).icon != 0)
-                drawImage(canvas,
-                        tmpAngle,
-                        BitmapFactory.decodeResource(getResources(),
-                        mSpinItemList.get(i).icon)
-                );
+            if (mSpinItemList!![i].icon != 0) drawImage(
+                canvas,
+                tmpAngle,
+                BitmapFactory.decodeResource(
+                    resources,
+                    mSpinItemList!![i].icon
+                )
+            )
 
-            tmpAngle += sweepAngle;
+            tmpAngle += sweepAngle
         }
 
-        drawCenterImage(canvas, drawableCenterImage);
+        drawCenterImage(canvas, drawableCenterImage)
     }
 
-    private void drawBackgroundColor(Canvas canvas, int color) {
-        if (color == 0)
-            return;
-        mBackgroundPaint = new Paint();
-        mBackgroundPaint.setColor(color);
-        canvas.drawCircle(mCenter, mCenter, mCenter - 5, mBackgroundPaint);
+    private fun drawBackgroundColor(canvas: Canvas, color: Int) {
+        if (color == 0) return
+        mBackgroundPaint = Paint()
+        mBackgroundPaint!!.color = color
+        canvas.drawCircle(
+            mCenter.toFloat(),
+            mCenter.toFloat(),
+            (mCenter - 5).toFloat(),
+            mBackgroundPaint!!
+        )
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
-        int width = Math.min(getMeasuredWidth(), getMeasuredHeight());
+        val width = min(measuredWidth.toDouble(), measuredHeight.toDouble())
+            .toInt()
 
-        mPadding = getPaddingLeft() == 0 ? 10 : getPaddingLeft();
-        mRadius = width - mPadding * 2;
+        mPadding = if (paddingLeft == 0) 10 else paddingLeft
+        mRadius = width - mPadding * 2
 
-        mCenter = width / 2;
+        mCenter = width / 2
 
-        setMeasuredDimension(width, width);
+        setMeasuredDimension(width, width)
     }
 
-    private void drawImage(Canvas canvas, float tmpAngle, Bitmap bitmap) {
-        int imgWidth = mRadius / mSpinItemList.size();
+    private fun drawImage(canvas: Canvas, tmpAngle: Float, bitmap: Bitmap) {
+        val imgWidth = mRadius / mSpinItemList!!.size
 
-        float angle = (float) ((tmpAngle + 360f / mSpinItemList.size() / 2) * Math.PI / 180);
+        val angle = ((tmpAngle + 360f / mSpinItemList!!.size / 2) * Math.PI / 180).toFloat()
 
-        int x = (int) (mCenter + mRadius / 2 / 2 * Math.cos(angle));
-        int y = (int) (mCenter + mRadius / 2 / 2 * Math.sin(angle));
+        val x = (mCenter + mRadius / 2 / 2 * cos(angle.toDouble())).toInt()
+        val y = (mCenter + mRadius / 2 / 2 * sin(angle.toDouble())).toInt()
 
-        Rect rect = new Rect(
-                x - imgWidth / 2, y - imgWidth / 2,
-                x + imgWidth / 2, y + imgWidth / 2
-        );
+        val rect = Rect(
+            x - imgWidth / 2, y - imgWidth / 2,
+            x + imgWidth / 2, y + imgWidth / 2
+        )
 
-        canvas.drawBitmap(bitmap, null, rect, null);
+        canvas.drawBitmap(bitmap, null, rect, null)
     }
 
-    private void drawCenterImage(Canvas canvas, Drawable drawable) {
-        ;
-        Bitmap bitmap = Utils.drawableToBitmap(drawable);
-        bitmap = Bitmap.createScaledBitmap(bitmap, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), false);
+    private fun drawCenterImage(canvas: Canvas, drawable: Drawable?) {
+        var bitmap = drawableToBitmap(drawable!!)
+        bitmap = Bitmap.createScaledBitmap(
+            bitmap,
+            drawable.intrinsicWidth,
+            drawable.intrinsicHeight,
+            false
+        )
         canvas.drawBitmap(
-                bitmap,
-                getMeasuredWidth() / 2 - bitmap.getWidth() / 2,
-                getMeasuredHeight() / 2 - bitmap.getHeight() / 2,
-                null
-        );
+            bitmap,
+            (measuredWidth / 2 - bitmap.width / 2).toFloat(),
+            (measuredHeight / 2 - bitmap.height / 2).toFloat(),
+            null
+        )
     }
 
-    private boolean isColorDark(int color) {
-        double colorValue = ColorUtils.calculateLuminance(color);
-        double compareValue = 0.30d;
-        return colorValue <= compareValue;
+    private fun isColorDark(color: Int): Boolean {
+        val colorValue = ColorUtils.calculateLuminance(color)
+        val compareValue = 0.30
+        return colorValue <= compareValue
     }
 
-    private void drawTopText(Canvas canvas, float tmpAngle, float sweepAngle, String mStr, int backgroundColor) {
-        Path path = new Path();
-        path.addArc(mRange, tmpAngle, sweepAngle);
+    private fun drawTopText(
+        canvas: Canvas,
+        tmpAngle: Float,
+        sweepAngle: Float,
+        mStr: String?,
+        backgroundColor: Int
+    ) {
+        val path = Path()
+        path.addArc(mRange, tmpAngle, sweepAngle)
 
-        if (textColor == 0)
-            mTextPaint.setColor(isColorDark(backgroundColor) ? 0xffffffff : 0xff000000);
+        if (textColor == 0) mTextPaint!!.color =
+            if (isColorDark(backgroundColor)) -0x1 else -0x1000000
 
-        Typeface typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
-        mTextPaint.setTypeface(typeface);
-        mTextPaint.setTextAlign(Paint.Align.LEFT);
-        mTextPaint.setTextSize(mTopTextSize);
-        float textWidth = mTextPaint.measureText(mStr);
-        int hOffset = (int) (mRadius * Math.PI / mSpinItemList.size() / 2 - textWidth / 2);
+        val typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL)
+        mTextPaint!!.setTypeface(typeface)
+        mTextPaint!!.textAlign = Paint.Align.LEFT
+        mTextPaint!!.textSize = mTopTextSize.toFloat()
+        val textWidth = mTextPaint!!.measureText(mStr)
+        val hOffset = (mRadius * Math.PI / mSpinItemList!!.size / 2 - textWidth / 2).toInt()
 
-        int vOffset = mTopTextPadding;
+        val vOffset = mTopTextPadding
 
-        canvas.drawTextOnPath(mStr, path, hOffset, vOffset, mTextPaint);
+        canvas.drawTextOnPath(mStr!!, path, hOffset.toFloat(), vOffset.toFloat(), mTextPaint!!)
     }
 
-    private void drawSecondaryText(Canvas canvas, float tmpAngle, String mStr, int backgroundColor) {
-        canvas.save();
-        int arraySize = mSpinItemList.size();
+    private fun drawSecondaryText(
+        canvas: Canvas,
+        tmpAngle: Float,
+        mStr: String?,
+        backgroundColor: Int
+    ) {
+        canvas.save()
+        val arraySize = mSpinItemList!!.size
 
-        if (textColor == 0)
-            mTextPaint.setColor(isColorDark(backgroundColor) ? 0xffffffff : 0xff000000);
+        if (textColor == 0) mTextPaint!!.color =
+            if (isColorDark(backgroundColor)) -0x1 else -0x1000000
 
-        Typeface typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD);
-        mTextPaint.setTypeface(typeface);
-        mTextPaint.setTextSize(mSecondaryTextSize);
-        mTextPaint.setTextAlign(Paint.Align.LEFT);
+        val typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
+        mTextPaint!!.setTypeface(typeface)
+        mTextPaint!!.textSize = mSecondaryTextSize.toFloat()
+        mTextPaint!!.textAlign = Paint.Align.LEFT
 
-        float textWidth = mTextPaint.measureText(mStr);
+        val textWidth = mTextPaint!!.measureText(mStr)
 
-        float initFloat = (tmpAngle + 360f / arraySize / 2);
-        float angle = (float) (initFloat * Math.PI / 180);
+        val initFloat = (tmpAngle + 360f / arraySize / 2)
+        val angle = (initFloat * Math.PI / 180).toFloat()
 
-        int x = (int) (mCenter + mRadius / 2 / 2 * Math.cos(angle));
-        int y = (int) (mCenter + mRadius / 2 / 2 * Math.sin(angle));
+        val x = (mCenter + mRadius / 2 / 2 * cos(angle.toDouble())).toInt()
+        val y = (mCenter + mRadius / 2 / 2 * sin(angle.toDouble())).toInt()
 
-        RectF rect = new RectF(x + textWidth, y,
-                x - textWidth, y);
+        val rect = RectF(
+            x + textWidth, y.toFloat(),
+            x - textWidth, y.toFloat()
+        )
 
-        Path path = new Path();
-        path.addRect(rect, Path.Direction.CW);
-        path.close();
-        canvas.rotate(initFloat + (arraySize / 18f), x, y);
-        canvas.drawTextOnPath(mStr, path, mTopTextPadding / 7f, mTextPaint.getTextSize() / 2.75f, mTextPaint);
-        canvas.restore();
+        val path = Path()
+        path.addRect(rect, Path.Direction.CW)
+        path.close()
+        canvas.rotate(initFloat + (arraySize / 18f), x.toFloat(), y.toFloat())
+        canvas.drawTextOnPath(
+            mStr!!,
+            path,
+            mTopTextPadding / 7f,
+            mTextPaint!!.textSize / 2.75f,
+            mTextPaint!!
+        )
+        canvas.restore()
     }
 
-    private float getAngleOfIndexTarget(int index) {
-        return (360f / mSpinItemList.size()) * index;
+    private fun getAngleOfIndexTarget(index: Int): Float {
+        return (360f / mSpinItemList!!.size) * index
     }
 
-    public void setRound(int numberOfRound) {
-        mRoundOfNumber = numberOfRound;
+    fun setRound(numberOfRound: Int) {
+        mRoundOfNumber = numberOfRound
     }
 
 
-    public void setPredeterminedNumber(int predeterminedNumber) {
-        this.predeterminedNumber = predeterminedNumber;
+    fun setPredeterminedNumber(predeterminedNumber: Int) {
+        this.predeterminedNumber = predeterminedNumber
     }
 
-    public void rotateTo(final int index) {
-        Random rand = new Random();
-        rotateTo(index, (rand.nextInt() * 3) % 2, true);
+    fun rotateTo(index: Int) {
+        val rand = Random()
+        rotateTo(index, (rand.nextInt() * 3) % 2, true)
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP_MR1)
-    public void rotateTo(final int index, @SpinRotation final int rotation, boolean startSlow) {
+    fun rotateTo(index: Int, @SpinRotation rotation: Int, startSlow: Boolean) {
         if (isRunning) {
-            return;
+            return
         }
 
-        int rotationAssess = rotation <= 0 ? 1 : -1;
+        val rotationAssess = if (rotation <= 0) 1 else -1
 
         //If the staring position is already off 0 degrees, make an illusion that the rotation has smoothly been triggered.
         // But this inital animation will just reset the position of the circle to 0 degreees.
         if (getRotation() != 0.0f) {
-            setRotation(getRotation() % 360f);
-            TimeInterpolator animationStart = startSlow ? new AccelerateInterpolator() : new LinearInterpolator();
+            setRotation(getRotation() % 360f)
+            val animationStart: TimeInterpolator =
+                if (startSlow) AccelerateInterpolator() else LinearInterpolator()
             //The multiplier is to do a big rotation again if the position is already near 360.
-            float multiplier = getRotation() > 200f ? 2 : 1;
+            val multiplier = (if (getRotation() > 200f) 2 else 1).toFloat()
             animate()
-                    .setInterpolator(animationStart)
-                    .setDuration(500L)
-                    .setListener(new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-                            isRunning = true;
-                        }
+                .setInterpolator(animationStart)
+                .setDuration(500L)
+                .setListener(object : AnimatorListener {
+                    override fun onAnimationStart(animation: Animator) {
+                        isRunning = true
+                    }
 
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            isRunning = false;
-                            setRotation(0);
-                            rotateTo(index, rotation, false);
-                        }
+                    override fun onAnimationEnd(animation: Animator) {
+                        isRunning = false
+                        setRotation(0f)
+                        rotateTo(index, rotation, false)
+                    }
 
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-                        }
+                    override fun onAnimationCancel(animation: Animator) {
+                    }
 
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
-                        }
-                    })
-                    .rotation(360f * multiplier * rotationAssess)
-                    .start();
-            return;
+                    override fun onAnimationRepeat(animation: Animator) {
+                    }
+                })
+                .rotation(360f * multiplier * rotationAssess)
+                .start()
+            return
         }
 
         // This addition of another round count for counterclockwise is to simulate the perception of the same number of spin
         // if you still need to reach the same outcome of a positive degrees rotation with the number of rounds reversed.
-        if (rotationAssess < 0) mRoundOfNumber++;
+        if (rotationAssess < 0) mRoundOfNumber++
 
-        float targetAngle = ((360f * mRoundOfNumber * rotationAssess) + 270f - getAngleOfIndexTarget(index) - (360f / mSpinItemList.size()) / 2);
+        val targetAngle =
+            ((360f * mRoundOfNumber * rotationAssess) + 270f - getAngleOfIndexTarget(index) - ((360f / mSpinItemList!!.size) / 2))
         animate()
-                .setInterpolator(new DecelerateInterpolator())
-                .setDuration(mRoundOfNumber * 1000 + 900L)
-                .setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        isRunning = true;
-                    }
+            .setInterpolator(DecelerateInterpolator())
+            .setDuration(mRoundOfNumber * 1000 + 900L)
+            .setListener(object : AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {
+                    isRunning = true
+                }
 
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        isRunning = false;
-                        setRotation(getRotation() % 360f);
-                        if (mPieRotateListener != null) {
-                            mPieRotateListener.rotateDone(index);
-                        }
+                override fun onAnimationEnd(animation: Animator) {
+                    isRunning = false
+                    setRotation(getRotation() % 360f)
+                    if (mPieRotateListener != null) {
+                        mPieRotateListener!!.rotateDone(index)
                     }
+                }
 
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                    }
+                override fun onAnimationCancel(animation: Animator) {
+                }
 
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-                    }
-                })
-                .rotation(targetAngle)
-                .start();
+                override fun onAnimationRepeat(animation: Animator) {
+                }
+            })
+            .rotation(targetAngle)
+            .start()
     }
 
-    public boolean touchEnabled = true;
+    var isTouchEnabled: Boolean = true
 
-    public boolean isTouchEnabled() {
-        return touchEnabled;
-    }
-
-    public void setTouchEnabled(boolean touchEnabled) {
-        this.touchEnabled = touchEnabled;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (isRunning || !touchEnabled) {
-            return false;
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (isRunning || !isTouchEnabled) {
+            return false
         }
 
-        final float x = event.getX();
-        final float y = event.getY();
+        val x = event.x
+        val y = event.y
 
-        final float xc = getWidth() / 2.0f;
-        final float yc = getHeight() / 2.0f;
+        val xc = width / 2.0f
+        val yc = height / 2.0f
 
-        double newFingerRotation;
+        val newFingerRotation: Double
 
 
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                viewRotation = (getRotation() + 360f) % 360f;
-                fingerRotation = Math.toDegrees(Math.atan2(x - xc, yc - y));
-                downPressTime = event.getEventTime();
-                return true;
-            case MotionEvent.ACTION_MOVE:
-                newFingerRotation = Math.toDegrees(Math.atan2(x - xc, yc - y));
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                viewRotation = (rotation + 360f) % 360f
+                fingerRotation = Math.toDegrees(atan2((x - xc).toDouble(), (yc - y).toDouble()))
+                downPressTime = event.eventTime
+                return true
+            }
+
+            MotionEvent.ACTION_MOVE -> {
+                newFingerRotation = Math.toDegrees(atan2((x - xc).toDouble(), (yc - y).toDouble()))
 
                 if (isRotationConsistent(newFingerRotation)) {
-                    setRotation(newRotationValue(viewRotation, fingerRotation, newFingerRotation));
+                    rotation = newRotationValue(viewRotation, fingerRotation, newFingerRotation)
                 }
-                return true;
-            case MotionEvent.ACTION_UP:
-                newFingerRotation = Math.toDegrees(Math.atan2(x - xc, yc - y));
-                float computedRotation = newRotationValue(viewRotation, fingerRotation, newFingerRotation);
+                return true
+            }
 
-                fingerRotation = newFingerRotation;
+            MotionEvent.ACTION_UP -> {
+                newFingerRotation = Math.toDegrees(atan2((x - xc).toDouble(), (yc - y).toDouble()))
+                var computedRotation =
+                    newRotationValue(viewRotation, fingerRotation, newFingerRotation)
+
+                fingerRotation = newFingerRotation
 
                 // This computes if you're holding the tap for too long
-                upPressTime = event.getEventTime();
+                upPressTime = event.eventTime
                 if (upPressTime - downPressTime > 700L) {
                     // Disregarding the touch since the tap is too slow
-                    return true;
+                    return true
                 }
 
                 // These operators are added so that fling difference can be evaluated
                 // with usually numbers that are only around more or less 100 / -100.
                 if (computedRotation <= -250f) {
-                    computedRotation += 360f;
+                    computedRotation += 360f
                 } else if (computedRotation >= 250f) {
-                    computedRotation -= 360f;
+                    computedRotation -= 360f
                 }
 
-                double flingDiff = computedRotation - viewRotation;
+                var flingDiff = (computedRotation - viewRotation).toDouble()
                 if (flingDiff >= 200 || flingDiff <= -200) {
                     if (viewRotation <= -50f) {
-                        viewRotation += 360f;
+                        viewRotation += 360f
                     } else if (viewRotation >= 50f) {
-                        viewRotation -= 360f;
+                        viewRotation -= 360f
                     }
                 }
 
-                flingDiff = computedRotation - viewRotation;
+                flingDiff = (computedRotation - viewRotation).toDouble()
 
-                if (flingDiff <= -60 ||
-                        //If you have a very fast flick / swipe, you an disregard the touch difference
-                        (flingDiff < 0 && flingDiff >= -59 && upPressTime - downPressTime <= 200L)) {
+                if (flingDiff <= -60 ||  //If you have a very fast flick / swipe, you an disregard the touch difference
+                    (flingDiff < 0 && flingDiff >= -59 && upPressTime - downPressTime <= 200L)
+                ) {
                     if (predeterminedNumber > -1) {
-                        rotateTo(predeterminedNumber, SpinRotation.COUNTERCLOCKWISE, false);
+                        rotateTo(predeterminedNumber, SpinRotation.COUNTERCLOCKWISE, false)
                     } else {
-                        rotateTo(getFallBackRandomIndex(), SpinRotation.COUNTERCLOCKWISE, false);
+                        rotateTo(fallBackRandomIndex, SpinRotation.COUNTERCLOCKWISE, false)
                     }
                 }
 
-                if (flingDiff >= 60 ||
-                        //If you have a very fast flick / swipe, you an disregard the touch difference
-                        (flingDiff > 0 && flingDiff <= 59 && upPressTime - downPressTime <= 200L)) {
+                if (flingDiff >= 60 ||  //If you have a very fast flick / swipe, you an disregard the touch difference
+                    (flingDiff > 0 && flingDiff <= 59 && upPressTime - downPressTime <= 200L)
+                ) {
                     if (predeterminedNumber > -1) {
-                        rotateTo(predeterminedNumber, SpinRotation.CLOCKWISE, false);
+                        rotateTo(predeterminedNumber, SpinRotation.CLOCKWISE, false)
                     } else {
-                        rotateTo(getFallBackRandomIndex(), SpinRotation.CLOCKWISE, false);
+                        rotateTo(fallBackRandomIndex, SpinRotation.CLOCKWISE, false)
                     }
                 }
 
-                return true;
+                return true
+            }
         }
-        return super.onTouchEvent(event);
+        return super.onTouchEvent(event)
     }
 
-    private float newRotationValue(final float originalWheenRotation, final double originalFingerRotation, final double newFingerRotation) {
-        double computationalRotation = newFingerRotation - originalFingerRotation;
-        return (originalWheenRotation + (float) computationalRotation + 360f) % 360f;
+    private fun newRotationValue(
+        originalWheenRotation: Float,
+        originalFingerRotation: Double,
+        newFingerRotation: Double
+    ): Float {
+        val computationalRotation = newFingerRotation - originalFingerRotation
+        return (originalWheenRotation + computationalRotation.toFloat() + 360f) % 360f
     }
 
-    private int getFallBackRandomIndex() {
-        Random rand = new Random();
-        return rand.nextInt(mSpinItemList.size() - 1) + 0;
-    }
+    private val fallBackRandomIndex: Int
+        get() {
+            val rand = Random()
+            return rand.nextInt(mSpinItemList!!.size - 1) + 0
+        }
 
     /**
      * This detects if your finger movement is a result of an actual raw touch event of if it's from a view jitter.
      * This uses 3 events of rotation temporary storage so that differentiation between swapping touch events can be determined.
      *
      */
-    private boolean isRotationConsistent(final double newRotValue) {
-        double evalValue = newRotValue;
+    private fun isRotationConsistent(newRotValue: Double): Boolean {
+        val evalValue = newRotValue
 
-        if (Double.compare(newRotationStore[2], newRotationStore[1]) != 0) {
-            newRotationStore[2] = newRotationStore[1];
+        if (java.lang.Double.compare(newRotationStore[2], newRotationStore[1]) != 0) {
+            newRotationStore[2] = newRotationStore[1]
         }
-        if (Double.compare(newRotationStore[1], newRotationStore[0]) != 0) {
-            newRotationStore[1] = newRotationStore[0];
+        if (java.lang.Double.compare(newRotationStore[1], newRotationStore[0]) != 0) {
+            newRotationStore[1] = newRotationStore[0]
         }
 
-        newRotationStore[0] = evalValue;
+        newRotationStore[0] = evalValue
 
-        if (Double.compare(newRotationStore[2], newRotationStore[0]) == 0
-                || Double.compare(newRotationStore[1], newRotationStore[0]) == 0
-                || Double.compare(newRotationStore[2], newRotationStore[1]) == 0
-
-                //Is the middle event the odd one out
-                || (newRotationStore[0] > newRotationStore[1] && newRotationStore[1] < newRotationStore[2])
-                || (newRotationStore[0] < newRotationStore[1] && newRotationStore[1] > newRotationStore[2])
+        if (//Is the middle event the odd one out
+            java.lang.Double.compare(
+                newRotationStore[2],
+                newRotationStore[0]
+            ) == 0 || java.lang.Double.compare(
+                newRotationStore[1],
+                newRotationStore[0]
+            ) == 0 || java.lang.Double.compare(
+                newRotationStore[2],
+                newRotationStore[1]
+            ) == 0 || (newRotationStore[0] > newRotationStore[1] && newRotationStore[1] < newRotationStore[2])
+            || (newRotationStore[0] < newRotationStore[1] && newRotationStore[1] > newRotationStore[2])
         ) {
-            return false;
+            return false
         }
-        return true;
+        return true
     }
 
 
-    @IntDef({
-            SpinRotation.CLOCKWISE,
-            SpinRotation.COUNTERCLOCKWISE
-    })
-    @interface SpinRotation {
-        int CLOCKWISE = 0;
-        int COUNTERCLOCKWISE = 1;
+    @IntDef(
+        SpinRotation.CLOCKWISE,
+        SpinRotation.COUNTERCLOCKWISE
+    )
+    internal annotation class SpinRotation {
+        companion object {
+            const val CLOCKWISE: Int = 0
+            const val COUNTERCLOCKWISE: Int = 1
+        }
     }
 }

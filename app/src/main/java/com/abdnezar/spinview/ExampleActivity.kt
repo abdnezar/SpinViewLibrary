@@ -30,8 +30,8 @@ class ExampleActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        binding.spinWheel.setSpinWheelRoundItemSelectedListener { index: Int ->
-            Toast.makeText(this, "$index", Toast.LENGTH_SHORT).show()
+        binding.spinWheel.setSpinWheelRoundItemSelectedListener { index ->
+            Toast.makeText(this, "Selected index: $index", Toast.LENGTH_SHORT).show()
         }
 
         binding.spinButton.setOnClickListener {
