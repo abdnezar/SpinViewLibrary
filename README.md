@@ -21,50 +21,42 @@ And Initialize the SpinWheel :
 
 ```java
 
-SpinWheel spinWheel = findViewById(R.id.spinWheel);
-List<SpinItem> data = new ArrayList<>();
+private var data: MutableList<SpinItem> = ArrayList()
 
-// Creating 5 Spin Items for demo purpose
-for (int i=1; i <= 5; i++) {
-    
-    SpinItem spinItem = new SpinItem();
-    spinItem.topText = i;
-    spinItem.icon = R.drawable.ic_any_image;
-    spinItem.color = 0xffFFF3E0;
-    data.add(spinItem);
+// Creating Spin Items
+private fun getSpinItems(): MutableList<SpinItem> {
+        val item1 = SpinItem()
+        item1.topText = "0"
+        item1.icon = R.drawable.ic_gold
+        item1.color = -0xc20
+        data.add(item1)
+
+        #add more items
+        ...
+        ...
 }
 
-// Setting prviously created Data to SpinWheel
-spinWheel.setData(data);
-spinWheel.setRound(5);
+binding.spinWheel.setData(data)
+binding.spinWheel.setRound(5)
+binding.spinWheel.isTouchEnabled = true
 
-// Start the Spin
-int index = getRandomIndex();
-spinWheel.startSpinWheelWithTargetIndex(index);
 
-// Spin Wheel onFinishListener
-spinWheel.setSpinWheelRoundItemSelectedListener(new SpinWheel.SpinWheelRoundItemSelectedListener() {
-    @Override
-    public void SpinWheelRoundItemSelected(int index) {
-    
-        // Reward here
-        String topText = data.get(index).topText;
-                                                       
-        Toast.makeText(getApplicationContext(), data.get(index).topText, Toast.LENGTH_SHORT).show();
-    }
-});
+binding.spinWheel.setSpinWheelRoundItemSelectedListener { index ->
+  Toast.makeText(this, "Selected index: $index", Toast.LENGTH_SHORT).show()
+}
 
+binding.spinButton.setOnClickListener {
+  binding.spinWheel.startSpinWheelWithTargetIndex(0)
+}
 ```
 
 ## Example
 
-For an example, please check the ExampleActivity class in the provided Sample App.
+For an example, please check the ExampleActivity class in the provided Sample App. [See Example](https://github.com/abdnezar/SpinViewLibrary/blob/master/app/src/main/java/com/abdnezar/spinview/ExampleActivity.kt)
 
 ## License
 ```
 MIT License
-
-Copyright (c) 2019 yashDev
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
