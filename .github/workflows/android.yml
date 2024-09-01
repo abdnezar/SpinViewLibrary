@@ -28,12 +28,6 @@ jobs:
     - name: Build APK
       run: ./gradlew :app:assembleRelease
 
-    # Move APK to a specific directory within the repository
-    - name: Move APK to build folder
-      run: |
-        mkdir -p build/apk
-        mv app/build/outputs/apk/release/*.apk build/apk/
-
     # Archive APK
     - name: Upload APK
       uses: actions/upload-artifact@v3
@@ -44,12 +38,6 @@ jobs:
     # Build AAR for spinview module
     - name: Build AAR
       run: ./gradlew :spinview:assembleRelease
-
-    # Move AAR to a specific directory within the repository
-    - name: Move AAR to build folder
-      run: |
-        mkdir -p build/aar
-        mv spinview/build/outputs/aar/*.aar build/aar/
 
     # Archive AAR
     - name: Upload AAR
