@@ -28,15 +28,20 @@ jobs:
     - name: Build APK
       run: ./gradlew :app:assembleRelease
 
+    # Archive APK
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
+      with:
+        name: app-release-apk
+        path: app/build/outputs/apk/release/*.apk
+
     # Build AAR for spinview module
     - name: Build AAR
       run: ./gradlew :spinview:assembleRelease
 
-    # Archive APK and AAR artifacts
-    - name: Upload APK and AAR
+    # Archive AAR
+    - name: Upload AAR
       uses: actions/upload-artifact@v3
       with:
-        name: artifacts
-        path: |
-          app/build/outputs/apk/release/*.apk
-          spinview/build/outputs/aar/*.aar
+        name: spinview-release-aar
+        path: spinview/build/outputs/aar/*.aar
