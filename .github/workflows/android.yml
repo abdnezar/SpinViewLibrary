@@ -1,4 +1,4 @@
-name: Android CI - Build Apk % AAR
+name: Android CI - Build Apk & AAR
 
 on:
   push:
