@@ -4,6 +4,7 @@ plugins {
     id("maven-publish")
 }
 
+// Publish to Maven Central
 publishing {
     publications {
         maven(MavenPublication) {
@@ -17,6 +18,36 @@ publishing {
         }
     }
 }
+
+// Publish to Github Packages
+//def githubProperties = new Properties()
+//githubProperties.load(new FileInputStream(rootProject.file("github.properties"))) // github.properties file
+//def getArtificatId = { -> return "SpinViewLibrary" }
+//def getGrroupId = { -> return "com.github.abdnezar" }
+//def getVersionName = { -> return "1.0.1" }
+//
+//publishing {
+//    publications {
+//        release(MavenPublication) {
+//            groupId getGrroupId()
+//            artifactId getArtificatId()
+//            version getVersionName()
+//            artifact("$buildDir/outputs/aar/${getArtificatId()}-release.aar")
+//        }
+//    }
+//
+//    repositories {
+//        maven {
+//            name = "GitHubPackages"
+//            url = uri("https://maven.pkg.github.com/abdnezar/SpinViewLibrary")
+//
+//            credentials {
+//                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_USER")
+//                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+//            }
+//        }
+//    }
+//}
 
 android {
     namespace = "com.abdnezar.spinview"

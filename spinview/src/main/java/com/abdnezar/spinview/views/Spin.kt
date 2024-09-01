@@ -59,16 +59,19 @@ class Spin : View {
 
     private var predeterminedNumber = -1
 
-    var viewRotation: Float = 0f
-    var fingerRotation: Double = 0.0
-    var downPressTime: Long = 0
-    var upPressTime: Long = 0
-    var newRotationStore: DoubleArray = DoubleArray(3)
+    private var viewRotation: Float = 0f
+    private var fingerRotation: Double = 0.0
+    private var downPressTime: Long = 0
+    private var upPressTime: Long = 0
+    private var newRotationStore: DoubleArray = DoubleArray(3)
 
 
     private var mSpinItemList: List<SpinItem>? = null
 
     private var mPieRotateListener: PieRotateListener? = null
+
+    val spinItemListSize: Int
+        get() = mSpinItemList!!.size
 
     interface PieRotateListener {
         fun rotateDone(index: Int)
@@ -104,9 +107,6 @@ class Spin : View {
             (mPadding + mRadius).toFloat()
         )
     }
-
-    val spinItemListSize: Int
-        get() = mSpinItemList!!.size
 
     fun setData(spinItemList: List<SpinItem>?) {
         this.mSpinItemList = spinItemList
