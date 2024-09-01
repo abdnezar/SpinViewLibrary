@@ -1,3 +1,6 @@
+[![Android CI - Build Apk](https://github.com/abdnezar/SpinViewLibrary/actions/workflows/android.yml/badge.svg)](https://github.com/abdnezar/SpinViewLibrary/actions/workflows/android.yml)
+[![](https://jitpack.io/v/abdnezar/SpinViewLibrary.svg)](https://jitpack.io/#abdnezar/SpinViewLibrary)
+
 # SpinView
 Easiest way to add Spin and Win on Android. LibSpin offers an Interactive Gamified Interface with lots of Customization options.
 
