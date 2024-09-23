@@ -4,10 +4,20 @@
 # SpinView
 Easiest way to add Spin and Win on Android. LibSpin offers an Interactive Gamified Interface with lots of Customization options.
 
-## Add to your app
-```gradle
+**Installation**
+1. Add JitPack to your root `build.gradle` at the end of repositories:
+```
+allprojects {
+  repositories {
+    // ... other repositories
+    maven { url 'https://jitpack.io'  }
+  }
+}
+```
 
-// force androidx.appcompat:appcompat:1.6.1 if using another version
+2. Add the dependency in app module build.gradle:
+```
+// force androidx.appcompat:appcompat:1.6.1 if don't need to update to 
 configurations.configureEach {
     resolutionStrategy {
         force 'androidx.appcompat:appcompat:1.6.1'
