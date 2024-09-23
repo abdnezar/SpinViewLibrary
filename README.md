@@ -4,6 +4,25 @@
 # SpinView
 Easiest way to add Spin and Win on Android. LibSpin offers an Interactive Gamified Interface with lots of Customization options.
 
+# Add to your app
+```gradle
+
+// force androidx.appcompat:appcompat:1.6.1 if using another version
+configurations.configureEach {
+    resolutionStrategy {
+        force 'androidx.appcompat:appcompat:1.6.1'
+    }
+}
+
+dependencies {
+    ...
+
+    implementation 'com.github.abdnezar:SpinViewLibrary:1.0.1'
+}
+
+
+```
+
 ## Usage
 Include SpinWheel in your layout :
 
