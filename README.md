@@ -17,7 +17,7 @@ allprojects {
 
 2. Add the dependency in app module build.gradle:
 ```
-// force androidx.appcompat:appcompat:1.6.1 if don't need to update to 
+// force androidx.appcompat:appcompat:1.6.1 if don't need to updated version 
 configurations.configureEach {
     resolutionStrategy {
         force 'androidx.appcompat:appcompat:1.6.1'
